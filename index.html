@@ -232,8 +232,9 @@
 </head>
 
 <body id="body">
-    <p style="font-family: 'JiangChengYuanTi', sans-serif;">请在字体被改变后点击开始
-    <button onclick="start()" id="start">开始</button></p>
+    <p style="font-family: 'JiangChengYuanTi', sans-serif;" id="start">请在字体被改变后点击开始
+        <button onclick="start()">开始</button>
+    </p>
     <div class="bars" id="bars">
     </div>
     <div class="paihangb" id="paihangb" style="opacity:0;display: none;">
@@ -260,7 +261,7 @@
         const scrs = ["https://imgbed.yiyunt.cn/img/121", "https://imgbed.yiyunt.cn/img/122", "https://imgbed.yiyunt.cn/img/124"]
         function showimg(id) {
             document.getElementById("imgs").className = "img233"
-            document.getElementById("imgs").src = scrs[id-1]
+            document.getElementById("imgs").src = scrs[id - 1]
             setTimeout(function () {
                 document.getElementById("imgs").className = "img1"
             }, 1000)
