@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bubble Sort Visualization</title>
+    <style>
+        @font-face {
+            font-family: 'JiangChengYuanTi';
+            src: url('江城圆体.woff2') format('woff2');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+
+        .bars {
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+        }
+
+        .bar {
+            position: relative;
+            width: 20px;
+            background-color: white;
+            transition: all 0.2s ease;
+        }
+
+        .value {
+            position: absolute;
+            left: 50%;
+            top: -30px;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 12px;
+        }
+
+        .bar.swapping {
+            background-color: blue;
+            animation: a 1000ms linear;
+        }
+
+        .shijian {
+            position: relative;
+            font-family: "JiangChengYuanTi", sans-serif;
+            min-height: 10px;
+            padding: 5px;
+            border-left: 7px solid rgb(255, 0, 221);
+            white-space: nowrap;
+            line-height: 0.5;
+            border-radius: 5px 30px 30px 5px;
+            background-color: rgb(255, 0, 221);
+
+            .h {
+                display: inline-block;
+                position: fixed;
+                top: 50%;
+                transform: translate(0%, -200%);
+
+            }
+
+            .text {
+                display: inline-block;
+                left: 30px;
+                position: relative;
+                top: -50%;
+            }
+
+            .div {
+                display: inline-block;
+                position: relative;
+                min-height: 30px;
+                min-width: 60px;
+                background-color: rgb(177, 40, 159);
+                top: 50%;
+                left: 60%;
+                transform: translate(-100%, 0%);
+
+                .p {
+                    position: relative;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-25%, -25%);
+                }
+            }
+        }
+
+        #start {
+            cursor: auto;
+        }
+    </style>
+    <style>
+        /* 字幕容器 */
+        .subtitle-container {
+
+            position: fixed;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            text-align: center;
+            opacity: 1;
+            transition: all 0.5s ease;
+        }
+
+        audio {
+            display: none;
+        }
+
+        /* 字幕文本 */
+        .subtitle-text {
+            font-family: "JiangChengYuanTi", sans-serif;
+            transition: opacity 0.5s ease;
+            font-size: 24px;
+            color: rgb(255, 255, 255);
+            padding: 10px;
+            border-radius: 5px;
+            text-shadow: 0 4px 10px rgba(255, 255, 255, 0.616);
+        }
+
+        .paihangb {
+            cursor: auto;
+            border: 1px solid rgb(255, 255, 255);
+            height: 420px;
+            opacity: 0;
+            width: 630px;
+            transition: opacity 0.5s ease;
+            position: fixed;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.616);
+            background-color: rgb(0, 0, 0);
+        }
+
+        .h123 {
+            position: relative;
+            bottom: 15px;
+            left: 87%;
+            transform: translateX(-50%);
+            font-family: "JiangChengYuanTi", sans-serif;
+
+        }
+
+        .div123 {
+            border: 1px solid rgb(255, 255, 255);
+            height: 60px;
+            line-height: 20px;
+            width: 580px;
+            position: relative;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.616);
+            background-color: rgb(0, 0, 0);
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: "JiangChengYuanTi", sans-serif;
+
+        }
+
+        .btn123 {
+            border: 1px solid rgb(255, 255, 255);
+            height: 50px;
+            line-height: 20px;
+            width: 120px;
+            color: white;
+            position: relative;
+            top: 10px;
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.616);
+            background-color: rgb(0, 0, 0);
+            left: 87%;
+            transform: translateX(-50%);
+            font-family: "JiangChengYuanTi", sans-serif;
+            transition: all 0.5s ease;
+        }
+
+        .btn123:hover {
+            cursor: pointer;
+            box-shadow: 0 6px 10px rgba(255, 255, 255, 0.616);
+        }
+
+        .img233 {
+            opacity: 0;
+            filter: blur(100px);
+            display: none;
+        }
+
+        .img1 {
+            object-fit: contain;
+            animation: img2 1s;
+            -webkit-animation: img2 1s;
+            transition: all 0.5s ease;
+            opacity: 1;
+            filter: blur(0px);
+        }
+
+        @keyframes img2 {
+            0% {
+                filter: blur(100px);
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 1;
+                filter: blur(0px);
+            }
+        }
+
+        @-webkit-keyframes img2 {
+            0% {
+                opacity: 0;
+                filter: blur(100px);
+            }
+
+            100% {
+                opacity: 1;
+                filter: blur(0px);
+            }
+        }
+    </style>
+</head>
+
+<body id="body">
+    <button onclick="start()" id="start">开始</button>
+    <div class="bars" id="bars">
+    </div>
+    <div class="paihangb" id="paihangb" style="opacity:0;display: none;">
+        <h1 class="h123">战力排行榜</h1>
+        <div class="div123" style="top:-30px"><br>暂无内容</div>
+        <div class="div123" style="top:-20px"><br>暂无内容</div>
+        <div class="div123" style="top:-10px"><br>暂无内容</div>
+        <div class="div123" style="top:0px"><br>暂无内容</div>
+        <button class="btn123">刷新排行榜</button>
+    </div>
+
+    <!--<div class="shijian" style="width: 150px;">
+        <h2 class="h">fx</h2>
+        <p class="text">自定义</p>
+        <div class="div">
+            <p class="p">css</p>
+        </div>
+    </div>-->
+    <img id="imgs">
+    <div class="subtitle-container" id="subtitlediv">
+        <p class="subtitle-text" id="subtitleText"></p>
+    </div>
+    <script>
+        const scrs = ["https://imgbed.yiyunt.cn/img/121", "https://imgbed.yiyunt.cn/img/122", "https://imgbed.yiyunt.cn/img/124"]
+        function showimg(id) {
+            document.getElementById("imgs").className = "img233"
+            document.getElementById("imgs").src = scrs[id-1]
+            setTimeout(function () {
+                document.getElementById("imgs").className = "img1"
+            }, 1000)
+        }
+        function playMusic(url) {
+            const audio = new Audio(url);
+            audio.addEventListener('ended', function () {
+                console.log('音乐播放结束');
+                //playMusic(musicUrl);
+            });
+            audio.play().catch(error => {
+                console.error('播放错误:', error);
+            });
+        }
+
+        // 文本数组和等待时间
+        const subtitles = [
+            { text: "众所周知", time: 1500 },
+            { text: "迷你世界会做UI排行榜的人少之又少", time: 2000 },
+            { text: "所以我做了一个", time: 1500 },
+            { text: "", time: 3500 },
+            { text: "如动画所示", time: 1500 },
+            { text: "它们根据从大到小的顺序排列(冒泡排序)", time: 1500 },
+            { text: "它的原理是遍历数组并根据大小交换数组的两个相邻值", time: 1500 },
+            { text: "然后，我们开始制作UI", time: 1500 },
+            { text: "", time: 4000 },
+            { text: "现在插入触发器", time: 1500 },
+            { text: "这是列表合并，因为迷你世界里表读取数据会很慢，而列表合并（合成单个文本）可以解决这个难题", time: 2000 },
+            { text: "这是列表分割，通过从表中获得到的文本分割成数组", time: 2000 },
+            { text: "这是冒泡排序源码，你们可以自行更改", time: 4000 },
+            { text: "感谢观看", time: 40000 }
+        ];
+
+        let currentSubtitleIndex = 0;
+
+        function showSubtitle(subtitle) {
+            const subtitleElement = document.getElementById('subtitleText');
+            subtitleElement.innerText = subtitle.text;
+            subtitleElement.style.opacity = 1;
+        }
+
+        function hideSubtitle() {
+            const subtitleElement = document.getElementById('subtitleText');
+            subtitleElement.style.opacity = 0;
+        }
+
+        function nextSubtitle() {
+            hideSubtitle();
+            setTimeout(() => {
+                currentSubtitleIndex = (currentSubtitleIndex + 1) % subtitles.length;
+                const currentSubtitle = subtitles[currentSubtitleIndex];
+                showSubtitle(currentSubtitle);
+                setTimeout(() => {
+                    nextSubtitle();
+                }, currentSubtitle.time);
+            }, 500); // 等待0.5秒以确保完全隐藏
+        }
+        function bubbleSort(bars1) {
+            console.log("读取到的数组" + String(bars1))
+            var old_jh = 0
+            var jh = 0
+            var b
+            while (true) {
+                var i = 0
+                while (i < bars1.length - 1) {
+                    if (bars1[i] < bars1[i + 1]) {
+                        var b = bars1[i + 1]
+                        bars1[i + 1] = bars1[i]
+                        bars1[i] = b
+                        jh++;
+                    }
+                    i++;
+                }
+                if (jh === old_jh) {
+                    break;
+                } else {
+                    old_jh = jh
+                }
+            }
+            return (bars1)
+        }
+        function start() {
+            let time2 = 0
+            console.log("开始运行！")
+            document.getElementById("body").style.cursor = "none";
+            document.getElementById("start").style.display = "none"
+            //隐藏鼠标和按钮，开始运行
+
+            const musicUrl = "https://dlink.host/musics/aHR0cHM6Ly9vbmVkcnYtbXkuc2hhcmVwb2ludC5jb20vOnU6L2cvcGVyc29uYWwvc3Rvcl9vbmVkcnZfb25taWNyb3NvZnRfY29tL0VkTVlQb0I0dGlaRWpRWlN6M0dqTWh3QnBhVDlqUEpYZU5LaDJfc1dOSll6RGc.m4a"
+            playMusic(musicUrl);
+            //播放音乐
+
+            showSubtitle(subtitles[currentSubtitleIndex]);
+            setTimeout(nextSubtitle, subtitles[currentSubtitleIndex].time);
+            //绘制字幕
+            time2 = time2 + 6000
+            setTimeout(function () {
+
+
+                var newDiv = document.getElementById('subtitlediv');
+                newDiv.style.bottom = "110px"
+                const barsContainer = document.getElementById('bars');
+
+                const numBars = 5;
+                const maxHeight = 150;
+                var bars = [];
+
+                for (let i = 1; i < numBars + 1; i++) {
+                    let height = Math.floor(Math.random() * maxHeight) + 1;
+                    bars.push(height);
+                    var newDiv = document.createElement('div');
+                    newDiv.className = "bar"
+                    newDiv.innerHTML = `<p class="value" id="value` + i + `">` + String(height) + `</p>`
+                    newDiv.style.height = height + "px"
+                    newDiv.id = String(i)
+                    document.getElementById("bars").appendChild(newDiv);
+                }
+
+                setTimeout(function () {
+                    var bars2 = bubbleSort(bars)
+                    var i = 0
+                    for (let i = 0; i < 5 + 1; i++) {
+
+                        setTimeout(function () {
+                            var newDiv = document.getElementById(i + 1)
+                            var newDiv2 = document.getElementById(i + 2)
+
+                            newDiv.className += " swapping"
+                            newDiv.style.height = bars2[i] + "px"
+
+                            newDiv2.className += " swapping"
+                            newDiv2.style.height = bars2[i + 1] + "px"
+
+
+                            var id = "value" + (i + 1)
+                            var id2 = "value" + (i + 2)
+                            var pElement = document.getElementById(id);
+                            pElement.innerHTML = bars2[i]
+
+                            var pElement = document.getElementById(id2);
+                            pElement.innerHTML = bars2[i + 1]
+                        }, 1000 * (i + 1));
+                    }
+                }, 1000);
+            }, 5000);
+            time2 = 17500
+            console.log(time2)
+            setTimeout(function () {
+                document.getElementById("paihangb").style.display = "block"
+                setTimeout(function () {
+                    document.getElementById("bars").style.display = "none"
+                    document.getElementById("paihangb").style.opacity = "1"
+                }, 500)
+            }, time2)
+            time2 = time2 + 5000
+            setTimeout(function () {
+                setTimeout(function () {
+                    document.getElementById("paihangb").style.opacity = "0"
+                }, 500)
+                document.getElementById("paihangb").style.display = "none"
+                showimg(1)
+            }, time2)
+            time2 = time2 + 2000 + 2000
+            setTimeout(function () {
+                showimg(2)
+            }, time2)
+
+            time2 = time2 + 2000 + 2000
+            setTimeout(function () {
+                showimg(3)
+            }, time2)
+        }
+    </script>
+
+</body>
+
+</html>
